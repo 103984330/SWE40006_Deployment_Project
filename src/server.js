@@ -2,12 +2,14 @@ require("dotenv").config();
 
 const express = require("express");
 const pool = require("./db");
+const booksRouter = require("./routes/books");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static("public"));
+app.use("/api/books", booksRouter);
 
 app.get("/health", async (req, res) => {
     try {
