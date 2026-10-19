@@ -1,0 +1,13 @@
+# Keep secrets and bulky/irrelevant files out of the image
+node_modules
+npm-debug.log
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+.github
+Dockerfile
+.dockerignore
+docker-compose*.yml
+README.md
