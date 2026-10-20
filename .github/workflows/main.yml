@@ -30,7 +30,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: 019066823731
+        ECR_REPOSITORY: 019066823731 #this needs to be not hardcoded, and also probably not this value at all
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and push it to ECR 
