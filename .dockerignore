@@ -11,3 +11,12 @@ Dockerfile
 .dockerignore
 docker-compose*.yml
 README.md
+
+# Tests and test output are not needed in the image
+tests
+coverage
+test-results
+playwright-report
+blob-report
+playwright.config.js
+.DS_Store

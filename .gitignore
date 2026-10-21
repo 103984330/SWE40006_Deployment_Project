@@ -1,2 +1,17 @@
 node_modules/
 .env
+.env.*
+!.env.example
+
+# Test output (regenerated on every run)
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Logs
+npm-debug.log*
+
+# macOS
+.DS_Store
