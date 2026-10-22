@@ -1,11 +1,22 @@
 {
   "name": "swe40006_deployment_project",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js", 
+    "test:unit": "jest tests/unit --coverage",
+    "test:integration": "jest tests/integration --runInBand",
+    "test:e2e": "playwright test"
   },
+
+  "jest": {
+    "testEnvironment": "node",
+    "setupFiles": ["./tests/setup-env.js"],
+    "collectCoverageFrom": ["src/**/*.js"],
+    "coverageThreshold": { "global": { "lines": 80, "branches": 70 } }
+  },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -16,6 +27,9 @@
     "pg": "^8.23.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.14"
+    "@playwright/test": "^1.64.1",
+    "jest": "^30.5.2",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.1"
   }
 }

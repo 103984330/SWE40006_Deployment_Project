@@ -11,3 +11,10 @@ Dockerfile
 .dockerignore
 docker-compose*.yml
 README.md
+tests
+coverage
+test-results
+playwright-report
+blob-report
+playwright.config.js
+.DS_Store

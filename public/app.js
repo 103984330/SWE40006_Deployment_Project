@@ -46,6 +46,17 @@ async function loadBooks(search = "") {
 }
 
 
+// Escape user-supplied text before it goes into innerHTML (prevents stored XSS)
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+
 function displayBooks(books) {
     booksList.innerHTML = "";
 
@@ -68,11 +79,11 @@ function displayBooks(books) {
         }
 
         bookElement.innerHTML = `
-            <h3>${book.title}</h3>
+            <h3>${escapeHtml(book.title)}</h3>
 
-            <p>Author: ${book.author}</p>
+            <p>Author: ${escapeHtml(book.author)}</p>
 
-            <p>ISBN: ${book.isbn}</p>
+            <p>ISBN: ${escapeHtml(book.isbn)}</p>
 
             <p>
                 Available:

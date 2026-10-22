@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+const path = require("path");
 const express = require("express");
 const pool = require("./db");
 const booksRouter = require("./routes/books");
@@ -31,7 +32,7 @@ app.use((req, res, next) => {
 
 
 app.use(express.json());
-app.use(express.static("public"));
+app.use(express.static(path.join(__dirname, "../public")));
 app.use("/api/books", booksRouter);
 
 
@@ -59,8 +60,14 @@ app.get("/health", async (req, res) => {
 });
 
 
-app.listen(PORT, () => {
-    console.log(
-        `Server running on http://localhost:${PORT}`
-    );
-});
+// Only listen when run directly (npm start / Docker), so tests can import the app
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(
+            `Server running on http://localhost:${PORT}`
+        );
+    });
+}
+
+
+module.exports = app;

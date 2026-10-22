@@ -17,6 +17,22 @@ function requireAdmin(req, res, next) {
 }
 
 
+// Largest value a PostgreSQL INTEGER (SERIAL) id can hold
+const MAX_ID = 2147483647;
+
+function validateId(req, res, next) {
+    const { id } = req.params;
+
+    if (!/^\d+$/.test(id) || Number(id) > MAX_ID) {
+        return res.status(400).json({
+            error: "Invalid book id"
+        });
+    }
+
+    next();
+}
+
+
 // Get all books or search books
 router.get("/", async (req, res) => {
     try {
@@ -73,13 +89,24 @@ router.post(
             } = req.body;
 
             if (
-                !title ||
-                !author ||
-                !isbn
+                typeof title !== "string" || !title.trim() ||
+                typeof author !== "string" || !author.trim() ||
+                typeof isbn !== "string" || !isbn.trim()
             ) {
                 return res.status(400).json({
                     error:
                         "title, author and isbn are required"
+                });
+            }
+
+            if (
+                title.length > 255 ||
+                author.length > 255 ||
+                isbn.length > 20
+            ) {
+                return res.status(400).json({
+                    error:
+                        "title/author max 255 characters, isbn max 20"
                 });
             }
 
@@ -137,6 +164,17 @@ router.post(
                     });
             }
 
+            if (
+                error.code === "22001"
+            ) {
+                return res
+                    .status(400)
+                    .json({
+                        error:
+                            "A field exceeds its maximum length"
+                    });
+            }
+
             res.status(500).json({
                 error:
                     "Failed to add book"
@@ -150,6 +188,7 @@ router.post(
 router.delete(
     "/:id",
     requireAdmin,
+    validateId,
     async (req, res) => {
 
         try {
@@ -200,6 +239,7 @@ router.delete(
 // Borrow book
 router.post(
     "/:id/borrow",
+    validateId,
     async (req, res) => {
 
         try {
@@ -253,6 +293,7 @@ router.post(
 // Return book
 router.post(
     "/:id/return",
+    validateId,
     async (req, res) => {
 
         try {

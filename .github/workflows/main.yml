@@ -70,8 +70,19 @@ jobs:
       - name: Run integration tests
         run: npm run test:integration
 
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
       - name: Run end-to-end tests
         run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
 
   # ---------- 2. Build the image once and push it to ECR (main only, not PRs) ----------
   build-and-push:
