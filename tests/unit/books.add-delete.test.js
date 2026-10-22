@@ -124,6 +124,28 @@ describe("POST /api/books validation and errors", () => {
         expect(res.body).toEqual({ error: "A book with this ISBN already exists" });
     });
 
+    test.each([
+        ["title over 255 characters", { title: "t".repeat(256) }],
+        ["author over 255 characters", { author: "a".repeat(256) }],
+        ["isbn over 20 characters", { isbn: "1".repeat(21) }],
+    ])("%s returns 400 without querying", async (_label, override) => {
+        const res = await request(app).post("/api/books").set(ADMIN).send({ ...NEW_BOOK, ...override });
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "title/author max 255 characters, isbn max 20" });
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test("value too long for its column (22001) returns 400", async () => {
+        const tooLong = Object.assign(new Error("value too long"), { code: "22001" });
+        pool.query.mockRejectedValue(tooLong);
+
+        const res = await request(app).post("/api/books").set(ADMIN).send(NEW_BOOK);
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "A field exceeds its maximum length" });
+    });
+
     test("any other DB error returns 500", async () => {
         pool.query.mockRejectedValue(new Error("connection refused"));
 
@@ -184,6 +206,14 @@ describe("DELETE /api/books/:id", () => {
 
         expect(res.status).toBe(403);
         expect(res.body).toEqual({ error: "Administrator access required" });
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test.each(["abc", "-1", "1.5", "2147483648"])("invalid id %p returns 400 without querying", async (id) => {
+        const res = await request(app).delete(`/api/books/${id}`).set(ADMIN);
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "Invalid book id" });
         expect(pool.query).not.toHaveBeenCalled();
     });
 

@@ -4,12 +4,22 @@ const { defineConfig, devices } = require("@playwright/test");
 const PORT = process.env.E2E_PORT || 3002;
 const BASE_URL = process.env.E2E_BASE_URL || `http://localhost:${PORT}`;
 
+// Same test-DB defaults as tests/setup-env.js (Jest-only). Inherited by the app that
+// webServer starts and by the test workers, which reset/seed through tests/helpers/db.js.
+process.env.DB_HOST ??= "localhost";
+process.env.DB_PORT ??= "5433";
+process.env.DB_NAME ??= "library_db_test";
+process.env.DB_USER ??= "postgres";
+process.env.DB_PASSWORD ??= "postgres";
+process.env.DOTENV_CONFIG_QUIET ??= "true";
+
 module.exports = defineConfig({
   testDir: "./tests/e2e",
-  fullyParallel: true,
+  // Serial: every test resets and seeds the one shared test database
+  fullyParallel: false,
   forbidOnly: !!process.env.CI,          // fail CI if a test.only is left in
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
   reporter: process.env.CI ? [["html", { open: "never" }], ["list"]] : "list",
 
   use: {

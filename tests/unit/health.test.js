@@ -1,27 +1,13 @@
 // Unit tests for GET /health.
 // The database is mocked, so these run without Postgres.
-const express = require("express");
 const request = require("supertest");
 
 jest.mock("../../src/db", () => ({ query: jest.fn() }));
 
 const pool = require("../../src/db");
 
-// /health lives in server.js, which doesn't export the app and calls listen() on load.
-// Stub listen so no port is opened, and capture the app it was called on.
-let app;
-
-beforeAll(() => {
-    const listenSpy = jest
-        .spyOn(express.application, "listen")
-        .mockImplementation(function () {
-            app = this;
-            return { close() {} };
-        });
-
-    require("../../src/server");
-    listenSpy.mockRestore();
-});
+// server.js exports the app and only calls listen() when run directly, so no port is opened
+const app = require("../../src/server");
 
 beforeEach(() => {
     pool.query.mockReset();

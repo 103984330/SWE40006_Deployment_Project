@@ -122,3 +122,30 @@ describe("POST /api/books/:id/return", () => {
         expect(res.body).toEqual({ error: "Failed to return book" });
     });
 });
+
+describe("Invalid ids on borrow and return", () => {
+    test.each([
+        ["borrow", "abc"],
+        ["borrow", "-1"],
+        ["borrow", "2147483648"],
+        ["return", "abc"],
+        ["return", "1abc"],
+        ["return", "99999999999"],
+    ])("%s with id %p returns 400 without querying", async (action, id) => {
+        const res = await request(app).post(`/api/books/${id}/${action}`);
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "Invalid book id" });
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test("the largest INTEGER id (2147483647) is accepted and reaches the database", async () => {
+        pool.query.mockResolvedValue({ rows: [] });
+
+        const res = await request(app).post("/api/books/2147483647/borrow");
+
+        expect(res.status).toBe(400);
+        expect(res.body).toEqual({ error: "Book not available or book not found" });
+        expect(pool.query).toHaveBeenCalledTimes(1);
+    });
+});

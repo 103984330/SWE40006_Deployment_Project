@@ -5,6 +5,9 @@ const dotenv = require("dotenv");
 
 process.env.NODE_ENV = "test";
 
+// Stop src/'s dotenv.config() calls printing "injected env" into test output
+process.env.DOTENV_CONFIG_QUIET = "true";
+
 // Load .env.test if it exists; falls back to the defaults below.
 dotenv.config({ path: path.resolve(__dirname, "../.env.test"), quiet: true });
 
