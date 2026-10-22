@@ -5,8 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Library Catalogue</title>
 </head>
+
 <body>
     <h1>Library Catalogue</h1>
-    <p>Application is running.</p>
+
+    <label for="roleSelect">Role:</label>
+
+    <select id="roleSelect">
+        <option value="customer">Customer</option>
+        <option value="admin">Administrator</option>
+    </select>
+
+    <br><br>
+
+    <input
+        type="text"
+        id="searchInput"
+        placeholder="Search by title, author or ISBN"
+    >
+
+    <button id="searchButton">Search</button>
+
+    <div id="adminSection" style="display: none;">
+        <h2>Add Book</h2>
+
+        <form id="addBookForm">
+            <input
+                type="text"
+                id="titleInput"
+                placeholder="Title"
+                required
+            >
+
+            <input
+                type="text"
+                id="authorInput"
+                placeholder="Author"
+                required
+            >
+
+            <input
+                type="text"
+                id="isbnInput"
+                placeholder="ISBN"
+                required
+            >
+
+            <input
+                type="number"
+                id="copiesInput"
+                placeholder="Copies"
+                min="0"
+                value="1"
+                required
+            >
+
+            <button type="submit">Add Book</button>
+        </form>
+    </div>
+
+    <div id="booksList"></div>
+
+    <script src="app.js"></script>
 </body>
 </html>
