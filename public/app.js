@@ -143,7 +143,7 @@ async function returnBook(id) {
         const response = await fetch(
             `/api/books/${id}/return`,
             {
-                method: "POST"
+                method: "GET"
             }
         );
 
