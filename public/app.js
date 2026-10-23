@@ -116,7 +116,7 @@ async function borrowBook(id) {
         const response = await fetch(
             `/api/books/${id}/borrow`,
             {
-                method: "GET" // this should be a POST
+                method: "POST" // this should be a POST
             }
         );
 

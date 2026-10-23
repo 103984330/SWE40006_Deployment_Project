@@ -3,8 +3,8 @@ name: CI/CD - Test, Build, Deploy
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main, dev ]
+  #pull_request:
+  #  branches: [ main, dev ]
 
 # Never run two deployments at the same time
 concurrency:
